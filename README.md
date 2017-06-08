@@ -14,6 +14,8 @@ git clone https://github.com/piyush0/Snipper
 cd Snipper
 
 npm install
+
+npm install electron --save -dev
 ```
 ## How to run
 
