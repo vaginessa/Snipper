@@ -61,8 +61,9 @@
                 <table id="mytable" class="table table-bordred table-striped">
 
                     <thead>
-                    <th>Title</th>
-                    <th>Language</th>
+                    <th> <div class="block">Title</div> <div class="arrow-down block" id="title"></div></th>
+                    <th> <div class="block">Language</div> <div class="arrow-down block" id="language"></div></th>
+                    <th> <div class="block">Date Modified</div> <div class="arrow-down block" id="timestamp"></div></th>
                     <th>Code</th>
                     <th>Edit</th>
                     <th>Delete</th>
@@ -151,6 +152,31 @@
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");
 </script>
+<style type="text/css">
+    .arrow-up {
+      width: 0; 
+      height: 0; 
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      
+      border-bottom: 5px solid black;
+    }
+    .arrow-down {
+      width: 0; 
+      height: 0; 
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      
+      border-top: 5px solid black;
+    }
+    .block {
+        display: inline-block;
+    }
+    .block:hover {
+        cursor: pointer;
+    }
+
+</style>
 
 </body>
 </html>

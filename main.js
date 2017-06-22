@@ -65,7 +65,8 @@ function sendAllSnips() {
                 title: snips[i].title,
                 language: snips[i].language,
                 id: snips[i]._id.toString(),
-                code: snips[i].code
+                code: snips[i].code,
+                timestamp: snips[i].timestamp
             })
         }
         mainWindow.webContents.send('all-snips', result);
@@ -109,7 +110,8 @@ ipcMain.on('new-snip-add', function (event, arg) {
         db.updateSnip(snip.id, {
             title: snip.title,
             language: snip.language,
-            code: snip.code
+            code: snip.code,
+            timestamp: Math.floor(Date.now() / 1000)
         }, function () {
             sendAllSnips();
         });
@@ -133,6 +135,19 @@ ipcMain.on('search-snip', function (event, arg) {
         mainWindow.webContents.send('all-snips', result);
     })
 })
+
+
+ipcMain.on('sort-dec', function (event, arg1,arg2) {
+    db.sort(arg1,arg2,-1,function (result) {
+        mainWindow.webContents.send('all-snips', result);
+    });
+});
+
+ipcMain.on('sort-inc', function (event, arg1,arg2) {
+    db.sort(arg1,arg2,1,function (result) {
+        mainWindow.webContents.send('all-snips', result);
+    });
+});
 
 module.exports = {sendAllSnips, newSnip}
 
