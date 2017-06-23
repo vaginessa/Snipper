@@ -127,6 +127,7 @@ ipcMain.on('new-snip-add', function (event, arg) {
 });
 
 ipcMain.on('copy-to-clip', function (event, code) {
+	console.log(code);
     clipboard.writeText(code);
 });
 

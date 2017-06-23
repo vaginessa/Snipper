@@ -24,7 +24,6 @@ window.onload = function () {
 function todate(timestamp) {
     var theDate = new Date( (timestamp+19800) * 1000 );
     var dateString = theDate.toGMTString();
-    console.log(dateString );
     return dateString;
 }
 
@@ -56,7 +55,8 @@ function search(event) {
 
 function copyToClip(element) {
     element = element.parentNode.parentNode;
-    let code = codes[element.firstChild.nextSibling.nextSibling.id];
+    let code = codes[element.firstChild.nextSibling.nextSibling.nextSibling.id];
+
     ipcRenderer.send('copy-to-clip', code);
 }
 
@@ -73,7 +73,7 @@ function readyToEdit(element) {
         id: element.id,
         title: element.firstChild.innerHTML,
         language: element.firstChild.nextSibling.innerHTML,
-        code: codes[element.firstChild.nextSibling.nextSibling.id]
+        code: codes[element.firstChild.nextSibling.nextSibling.nextSibling.id]
     };
 
 

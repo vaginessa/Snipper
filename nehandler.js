@@ -65,7 +65,7 @@ function deleteSnip(snipId, done) {
 
 function sort(arg1,arg2,val,done) {
 
-	if(arg1=="title"){
+	if(arg1=="title_show"){
 	    snips.find({
 	        "title": new RegExp(arg2)
 	    }).sort({"title" : val}).exec(
@@ -73,7 +73,7 @@ function sort(arg1,arg2,val,done) {
 	            done(result);
 	        })
 	}
-	else if(arg1=="language"){
+	else if(arg1=="language_show"){
 		snips.find({
 	        "title": new RegExp(arg2)
 	    }).sort({"language" : val}).exec(
