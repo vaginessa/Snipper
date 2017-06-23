@@ -8,7 +8,7 @@ const snips = new Datastore({ filename: userData+'/db/snips.db', autoload: true 
 
 function insertSnip(snip, done) {
     snips.insert(snip, function (err, result) {
-        done(result.ops);
+        done(result);
     })
 }
 
@@ -63,6 +63,35 @@ function deleteSnip(snipId, done) {
     })
 }
 
+function sort(arg1,arg2,val,done) {
+
+	if(arg1=="title_show"){
+	    snips.find({
+	        "title": new RegExp(arg2)
+	    }).sort({"title" : val}).exec(
+	        function (err, result) {
+	            done(result);
+	        })
+	}
+	else if(arg1=="language_show"){
+		snips.find({
+	        "title": new RegExp(arg2)
+	    }).sort({"language" : val}).exec(
+	        function (err, result) {
+	            done(result);
+	        })
+	}
+	else{
+		snips.find({
+	        "title": new RegExp(arg2)
+	    }).sort({"timestamp" : val}).exec(
+	        function (err, result) {
+	            done(result);
+	        })
+	}
+
+}
+
 module.exports = {
-    insertSnip, findSnip, allSnips, updateSnip, deleteSnip, searchSnip
+    insertSnip, findSnip, allSnips, updateSnip, deleteSnip, searchSnip ,sort
 };
