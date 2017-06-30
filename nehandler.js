@@ -63,35 +63,63 @@ function deleteSnip(snipId, done) {
     })
 }
 
-function sort(arg1,arg2,val,done) {
 
-	if(arg1=="title_show"){
-	    snips.find({
-	        "title": new RegExp(arg2)
-	    }).sort({"title" : val}).exec(
-	        function (err, result) {
-	            done(result);
-	        })
-	}
-	else if(arg1=="language_show"){
-		snips.find({
-	        "title": new RegExp(arg2)
-	    }).sort({"language" : val}).exec(
-	        function (err, result) {
-	            done(result);
-	        })
-	}
-	else{
-		snips.find({
-	        "title": new RegExp(arg2)
-	    }).sort({"timestamp" : val}).exec(
-	        function (err, result) {
-	            done(result);
-	        })
-	}
+function updateHotKey(snipId, value, done){
+
+    snips.find({}).exec(function (err,result) {
+        snips.update({
+            _id: snipId
+        }, { $set: { hotkey: value } }, function (err) {
+            done(true);
+        })
+    });   
 
 }
 
+function removehotkey(snipId){
+    snips.update({
+            _id: snipId
+        }, { $set: { hotkey: null } }, function (err) {
+    });
+}
+
+
+function sort(arg1,arg2,val,done) {
+
+    if(arg1=="title_show"){
+        snips.find({
+            "title": new RegExp(arg2)
+        }).sort({"title" : val}).exec(
+            function (err, result) {
+                done(result);
+            })
+    }
+    else if(arg1=="language_show"){
+        snips.find({
+            "title": new RegExp(arg2)
+        }).sort({"language" : val}).exec(
+            function (err, result) {
+                done(result);
+            })
+    }
+    else{
+        snips.find({
+            "title": new RegExp(arg2)
+        }).sort({"timestamp" : val}).exec(
+            function (err, result) {
+                done(result);
+            })
+    }
+
+}
+
+function getcode(snipId, done){
+    console.log(snipId+"dsa");
+    snips.find({ "_id": snipId }, function (err, docs) {
+        done(docs[0].code);
+    });
+}
+
 module.exports = {
-    insertSnip, findSnip, allSnips, updateSnip, deleteSnip, searchSnip ,sort
+    insertSnip, findSnip, allSnips, updateSnip, deleteSnip, searchSnip ,sort, updateHotKey, removehotkey, getcode
 };
