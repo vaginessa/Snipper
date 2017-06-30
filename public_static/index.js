@@ -119,6 +119,12 @@ ipcRenderer.on('hotkey-set-return', function (event, iftrue, id, message, hotkey
     else{
         $("#"+id).find(".hotkey-text").attr('value', "");
     }
+    if(message===" registration successful "){
+        $.toaster({ message : message , priority : 'success' });
+    }
+    else{
+        $.toaster({ message : message , priority : 'danger' });
+    }
 
     console.log(message+" "+id);
 
@@ -134,6 +140,7 @@ function SetHotKey(element) {
         $("#"+element_parent.id).find(".hotkey-text").attr('value',"");
         $("#"+element_parent.id).find(".hotkey-text").removeAttr('readonly');
         $("#"+element_parent.id).find(".hotkey-text").removeAttr('style');
+        $.toaster({ message : "Unregistered" , priority : 'success' });
     }
     else{
         ipcRenderer.send('hotkey-set', element_parent.id, element.parentNode.parentNode.firstChild.value,
@@ -159,6 +166,7 @@ function editSnip() {
 }
 
 function deleteSnip() {
+    
     ipcRenderer.send('delete-snip', deleteReadySnipId,$("#"+deleteReadySnipId).find(".hotkey-text").attr('value'));
 };
 
