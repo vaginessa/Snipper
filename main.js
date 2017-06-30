@@ -1,6 +1,6 @@
 'use strict';
 
-const {app, BrowserWindow, ipcMain, globalShortcut, clipboard} = require('electron');
+const {app, BrowserWindow, ipcMain, globalShortcut, clipboard, shell} = require('electron');
 
 const path = require('path');
 const url = require('url');
@@ -187,6 +187,15 @@ ipcMain.on('hotkey-unset', function (event, id, hotkey) {
     }
 });
 
+ipcMain.on("openhelp", function(event){
+    var helpWindow = new BrowserWindow ({
+        width: 800,
+        height: 600
+    })
+    helpWindow.loadURL('https://github.com/electron/electron/blob/master/docs/api/accelerator.md')
+    //mainWindow.openDevTools() //opens inspect console
+
+});
 
 ipcMain.on('sort-dec', function (event, arg1,arg2) {
     db.sort(arg1,arg2,-1,function (result) {

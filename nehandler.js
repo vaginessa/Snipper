@@ -114,7 +114,6 @@ function sort(arg1,arg2,val,done) {
 }
 
 function getcode(snipId, done){
-    console.log(snipId+"dsa");
     snips.find({ "_id": snipId }, function (err, docs) {
         done(docs[0].code);
     });

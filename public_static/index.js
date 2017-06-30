@@ -142,6 +142,10 @@ function SetHotKey(element) {
 
 }
 
+function openhelp() {
+    ipcRenderer.send('openhelp');
+}
+
 function editSnip() {
     const snip = {
         "_id": editReadySnip.id,
