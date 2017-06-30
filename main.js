@@ -85,7 +85,8 @@ ipcMain.on('get-snips', function () {
 });
 
 ipcMain.on('delete-snip', function (event, arg, hotkey) {
-    if(hotkey!=null){
+    console.log(hotkey);
+    if(hotkey!=null && hotkey!=""){
         globalShortcut.unregister(hotkey);
         console.log("unregistered "+hotkey);
     }
