@@ -29,8 +29,9 @@ window.onload = function () {
 };
 
 function todate(timestamp) {
-    var theDate = new Date( (timestamp+19800) * 1000 );
-    var dateString = theDate.toGMTString();
+    const theDate = new Date((timestamp + 19800) * 1000);
+    const dateString = theDate.getDate() + "/" + theDate.getMonth() + "/" + theDate.getFullYear();
+
     return dateString;
 }
 
@@ -137,7 +138,6 @@ ipcRenderer.on('hotkey-set-return', function (event, iftrue, id, message, hotkey
 function SetHotKey(element) {
 
     element_parent = element.parentNode.parentNode.parentNode.parentNode;
-    console.log($("#"+element_parent.id).find(".hotkey-text").attr('set'))
     if( $("#"+element_parent.id).find(".hotkey-text").attr('set') === "true"){
         ipcRenderer.send('hotkey-unset', element_parent.id, $("#"+element_parent.id).find(".hotkey-text").attr('value'));
         $("#"+element_parent.id).find(".hotkey-text").attr('set',false);
