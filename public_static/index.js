@@ -17,6 +17,13 @@ let deleteBlock = '<td> <p data-placement="top" data-toggle="tooltip" title="Del
 let copyBlock = '<td> <p data-placement="top"<button onclick="copyToClip(this)" class="btn btn-primary btn-xs" data-title="Copy"><span class="glyphicon glyphicon-copy"></span></button></p> </td> '
 let search_text=""
 
+let hotkey =  ' <td>  <div class="input-group" style="width:300px;" >'
+              +'<input type="text" class="form-control hotkey-text" placeholder="Set Key Combination">'
+              +'<span class="input-group-btn">'
+              +'<button onclick="SetHotKey(this)" class="btn btn-secondary" type="button">Set/Unset</button>'
+              +'</span>'
+              +'</div> </td>'
+
 window.onload = function () {
     ipcRenderer.send('get-snips');
 };
@@ -27,12 +34,12 @@ function todate(timestamp) {
     return dateString;
 }
 
-ipcRenderer.on('all-snips', function (event, data) {
+ipcRenderer.on('all-snips', function (event, data, isNewSession) {
     const table = document.getElementById("tablebody");
     const searchBox = document.getElementById("srch-term");
     searchBox.oninput = search
     table.innerHTML = "";
-
+    console.log(data);
     for (let i = 0; i < data.length; i++) {
         codes[i] = data[i].code;
         if (data[i].code.length > MAX_DISPLAY_SIZE) {
@@ -40,11 +47,26 @@ ipcRenderer.on('all-snips', function (event, data) {
             data[i].code += "<i> More... </i>"
         }
 
-        table.innerHTML += "<tr id=" + data[i].id + ">" +
+        table.innerHTML += "<tr id=" + data[i]._id + ">" +
             "<td>" + data[i].title + "</td>" +
             "<td>" + data[i].language + "</td>" +
             "<td>" + todate(data[i].timestamp) + "</td>" +
-            "<td id=" + i + '>' + "<pre>" + data[i].code + "</pre>" + "</td>" + editBlock + deleteBlock + copyBlock + "</tr>"
+            "<td id=" + i + '>' + "<pre>" + data[i].code + "</pre>" + "</td>" + editBlock + deleteBlock + copyBlock +
+             hotkey +"</tr>"
+
+        if(data[i].hotkey!=null && isNewSession===true){
+            ipcRenderer.send('hotkey-set', data[i]._id, data[i].hotkey, data[i].code)
+        }
+
+        if(data[i].hotkey!=null && isNewSession===false){
+            $("#"+data[i]._id).find(".hotkey-text").css('box-shadow','0px 1px 1px rgba(0, 0, 0, 0.075) \
+                                            inset, 0px 0px 8px rgba(255, 100, 255, 0.5)');
+            $("#"+data[i]._id).find(".hotkey-text").attr('value', data[i].hotkey);
+            $("#"+data[i]._id).find(".hotkey-text").attr('readonly', true);
+            $("#"+data[i]._id).find(".hotkey-text").attr('set', true);
+        }
+
+        console.log(data[i]._id+"  "+data[i].hotkey);
     }
 });
 
@@ -76,7 +98,6 @@ function readyToEdit(element) {
         code: codes[element.firstChild.nextSibling.nextSibling.nextSibling.id]
     };
 
-
     modalTitle = document.getElementById("title");
     modalLanguage = document.getElementById("language");
     modalCode = ace.edit("editor");
@@ -86,24 +107,76 @@ function readyToEdit(element) {
     modalCode.setValue(editReadySnip.code);
 }
 
+ipcRenderer.on('invalid_key_error', function (event, err) {
+    $.toaster({ message : "Invalid Key" , priority : 'danger' });
+});
+
+ipcRenderer.on('hotkey-set-return', function (event, iftrue, id, message, hotkey) {
+    
+    if(iftrue){
+        $("#"+id).find(".hotkey-text").css('box-shadow','0px 1px 1px rgba(0, 0, 0, 0.075) \
+                                            inset, 0px 0px 8px rgba(255, 100, 255, 0.5)');
+        $("#"+id).find(".hotkey-text").attr('value', hotkey);
+        $("#"+id).find(".hotkey-text").attr('readonly', true);
+        $("#"+id).find(".hotkey-text").attr('set', true);
+    }
+    else{
+        $("#"+id).find(".hotkey-text").attr('value', "");
+    }
+    if(message===" registration successful "){
+        $.toaster({ message : message , priority : 'success' });
+    }
+    else{
+        $.toaster({ message : message , priority : 'danger' });
+    }
+
+    console.log(message+" "+id);
+
+});
+
+function SetHotKey(element) {
+
+    element_parent = element.parentNode.parentNode.parentNode.parentNode;
+    console.log($("#"+element_parent.id).find(".hotkey-text").attr('set'))
+    if( $("#"+element_parent.id).find(".hotkey-text").attr('set') === "true"){
+        ipcRenderer.send('hotkey-unset', element_parent.id, $("#"+element_parent.id).find(".hotkey-text").attr('value'));
+        $("#"+element_parent.id).find(".hotkey-text").attr('set',false);
+        $("#"+element_parent.id).find(".hotkey-text").attr('value',"");
+        $("#"+element_parent.id).find(".hotkey-text").removeAttr('readonly');
+        $("#"+element_parent.id).find(".hotkey-text").removeAttr('style');
+        $.toaster({ message : "Unregistered" , priority : 'success' });
+    }
+    else{
+        ipcRenderer.send('hotkey-set', element_parent.id, element.parentNode.parentNode.firstChild.value,
+                                    codes[element_parent.firstChild.nextSibling.nextSibling.nextSibling.id])
+    }
+
+}
+
+function openhelp() {
+    ipcRenderer.send('openhelp');
+}
+
 function editSnip() {
     const snip = {
-        "id": editReadySnip.id,
+        "_id": editReadySnip.id,
         "title": modalTitle.value,
         "language": modalLanguage.value,
-        "code": modalCode.getValue()
+        "code": modalCode.getValue(),
+        "hotkey": $("#"+editReadySnip.id).find(".hotkey-text").attr('value')
     };
 
     ipcRenderer.send('new-snip-add', JSON.stringify(snip))
 }
 
 function deleteSnip() {
-    ipcRenderer.send('delete-snip', deleteReadySnipId);
-}
+    
+    ipcRenderer.send('delete-snip', deleteReadySnipId,$("#"+deleteReadySnipId).find(".hotkey-text").attr('value'));
+};
 
 function newSnip() {
     ipcRenderer.send('new-snip');
-}
+};
 
 $(".arrow-down, .arrow-up").click(function(e){
 
