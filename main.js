@@ -77,7 +77,7 @@ function sendAllSnips(isNewSession) {
 /* IPC's */
 
 ipcMain.on('new-snip', function (event, arg) {
-   newSnip();
+    newSnip();
 });
 
 ipcMain.on('get-snips', function () {
@@ -85,10 +85,8 @@ ipcMain.on('get-snips', function () {
 });
 
 ipcMain.on('delete-snip', function (event, arg, hotkey) {
-    console.log(hotkey);
-    if(hotkey!=null && hotkey!=""){
+    if (hotkey != null && hotkey != "") {
         globalShortcut.unregister(hotkey);
-        console.log("unregistered "+hotkey);
     }
     db.deleteSnip(arg, function () {
         sendAllSnips(false);
@@ -111,8 +109,8 @@ ipcMain.on('close-snip-win', function (event, arg) {
 ipcMain.on('new-snip-add', function (event, arg) {
 
     let snip = JSON.parse(arg);
-    if(snip.hotkey==undefined){
-        snip.hotkey=null;
+    if (snip.hotkey == undefined) {
+        snip.hotkey = null;
     }
     if (snip._id) {
         db.updateSnip(snip._id, {
@@ -138,44 +136,40 @@ ipcMain.on('new-snip-add', function (event, arg) {
 ipcMain.on('copy-to-clip', function (event, code) {
     clipboard.writeText(code);
 });
- 
+
 ipcMain.on('search-snip', function (event, arg) {
-    db.searchSnip(arg,function (result) {
+    db.searchSnip(arg, function (result) {
         mainWindow.webContents.send('all-snips', result, false);
     })
 });
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     mainWindow.webContents.send('invalid_key_error', err);
 });
 
-ipcMain.on('hotkey-set', function(event, id, value, code){
+ipcMain.on('hotkey-set', function (event, id, value, code) {
 
 
-    var ret = globalShortcut.register(value, function(){
-        db.getcode(id,function(newcode){
+    let msg;
+    let ret = globalShortcut.register(value, function () {
+        db.getcode(id, function (newcode) {
             clipboard.writeText(newcode);
         });
     });
     if (!ret) {
-        console.log('registration failed');
+        const isr = globalShortcut.isRegistered(value);
 
-        var isr = globalShortcut.isRegistered(value);
-
-        if (isr){
-            var msg = " already registered"
-        }
-        else{
-            var msg = " invalid format "
+        if (isr) {
+            msg = " Already Registered";
+        } else {
+            msg = " Invalid Format ";
         }
         mainWindow.webContents.send('hotkey-set-return', false, id, msg, value);
     }
-    else{
-        console.log('registration successful')
-        db.updateHotKey(id,value,function (istrue) {
-
-            var msg = " registration successful "
-            mainWindow.webContents.send('hotkey-set-return', true, id, msg, value);        
+    else {
+        db.updateHotKey(id, value, function (istrue) {
+            const msg = " Registration Successful ";
+            mainWindow.webContents.send('hotkey-set-return', true, id, msg, value);
         });
     }
 
@@ -184,34 +178,33 @@ ipcMain.on('hotkey-set', function(event, id, value, code){
 
 ipcMain.on('hotkey-unset', function (event, id, hotkey) {
     db.removehotkey(id);
-    console.log('unregistering ' +hotkey)
-    if(hotkey!=null){
+
+    if (hotkey != null) {
         globalShortcut.unregister(hotkey);
-        console.log("unregistered "+hotkey);
     }
 });
 
-ipcMain.on("openhelp", function(event){
-    var helpWindow = new BrowserWindow ({
+ipcMain.on("openhelp", function (event) {
+    let helpWindow = new BrowserWindow({
         width: 800,
         height: 600
-    })
-    helpWindow.loadURL('https://github.com/electron/electron/blob/master/docs/api/accelerator.md')
+    });
+    helpWindow.loadURL('https://github.com/electron/electron/blob/master/docs/api/accelerator.md');
     //mainWindow.openDevTools() //opens inspect console
 
 });
 
-ipcMain.on('sort-dec', function (event, arg1,arg2) {
-    db.sort(arg1,arg2,-1,function (result) {
+ipcMain.on('sort-dec', function (event, arg1, arg2) {
+    db.sort(arg1, arg2, -1, function (result) {
         mainWindow.webContents.send('all-snips', result, false);
     });
 });
 
-ipcMain.on('sort-inc', function (event, arg1,arg2) {
-    db.sort(arg1,arg2,1,function (result) {
+ipcMain.on('sort-inc', function (event, arg1, arg2) {
+    db.sort(arg1, arg2, 1, function (result) {
         mainWindow.webContents.send('all-snips', result, false);
     });
 });
 
-module.exports = {sendAllSnips, newSnip}
+module.exports = {sendAllSnips, newSnip};
 
