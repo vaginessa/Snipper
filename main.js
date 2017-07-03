@@ -138,13 +138,16 @@ ipcMain.on('new-snip-add', function (event, arg) {
 ipcMain.on('copy-to-clip', function (event, code) {
     clipboard.writeText(code);
 });
-
+ 
 ipcMain.on('search-snip', function (event, arg) {
     db.searchSnip(arg,function (result) {
         mainWindow.webContents.send('all-snips', result, false);
     })
-})
+});
 
+process.on('uncaughtException', function(err) {
+    mainWindow.webContents.send('invalid_key_error', err);
+});
 
 ipcMain.on('hotkey-set', function(event, id, value, code){
 

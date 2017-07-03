@@ -107,6 +107,10 @@ function readyToEdit(element) {
     modalCode.setValue(editReadySnip.code);
 }
 
+ipcRenderer.on('invalid_key_error', function (event, err) {
+    $.toaster({ message : "Invalid Key" , priority : 'danger' });
+});
+
 ipcRenderer.on('hotkey-set-return', function (event, iftrue, id, message, hotkey) {
     
     if(iftrue){
