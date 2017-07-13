@@ -38,7 +38,7 @@ switch (squirrelEvent) {
  // explorer context menus
 
  // Install desktop and start menu shortcuts
- spawnUpdate(['--createShortcut', "Snipper"]);
+ spawnUpdate(['--createShortcut', exeName]);
 
  setTimeout(app.quit, 1000);
  return true;
