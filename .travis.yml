@@ -9,7 +9,7 @@ install:
 - npm install
 - npm install electron --save -dev
 script:
-- npm start
+- node main.js
 deploy:
   provider: releases
   api_key: '$GITHUB_API_KEY'
