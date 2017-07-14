@@ -1,3 +1,5 @@
+sudo: true
+dist: trusty
 language: node_js
 node_js:
   - "7"
@@ -6,3 +8,11 @@ install:
 - npm install electron --save -dev
 script:
 - npm start
+deploy:
+  provider: releases
+  api_key: '$GITHUB_API_KEY'
+  file: '*'
+  skip_cleanup: true
+  on:
+    repo: akansh97531/Snipper
+    tags: true
