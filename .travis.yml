@@ -1,18 +1,13 @@
 sudo: true
 dist: trusty
-before_install:
-- sudo npm install -g npm
-- sudo npm install --save electron
-- sudo npm install -g npm@latest
-- sudo npm install electron -g --verbose
 language: node_js
 node_js:
   - "7"
 install:
-- sudo npm install
-- sudo npm install electron --save -dev
+- npm install
+- npm install electron --save -dev
 script:
-- sudo npm start
+- npm start
 deploy:
   provider: releases
   api_key: '$GITHUB_API_KEY'
