@@ -10,7 +10,7 @@
     "dist-mac": "build --mac",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "package-win": "electron-packager . --asar=true --overwrite --prune=true --out=installers --version-string.FileDescription=CE --version-string.CompanyName=CE --version-string.ProductName=\"Snipper\"",
+    "package-win": "electron-packager . --overwrite --out=installers --version-string.FileDescription=CB --version-string.CompanyName=CB --version-string.ProductName=\"Snipper\"",
     "create-installer-win": "node installers/win-installer.js"
   },
   "build": {
