@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/akansh97531/Snipper.svg?branch=master)](https://travis-ci.org/akansh97531/Snipper)
+
 # Snipper
 
 This is a simple desktop app that lets you save your most frequently used Code Snippets with syntax highlighting.
