@@ -1,8 +1,19 @@
 'use strict';
 
-const {app, BrowserWindow, ipcMain, globalShortcut, clipboard} = require('electron');
 
 const path = require('path');
+
+ //handle setupevents as quickly as possible
+ const setupEvents = require("./setupEvents")
+ if (setupEvents.handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
+ }
+
+
+const {app, BrowserWindow, ipcMain, globalShortcut, clipboard} = require('electron');
+
+
 const url = require('url');
 // const db = require('./mongohandler');
 const db = require('./nehandler');
