@@ -12,5 +12,5 @@ deploy:
   file: '*'
   skip_cleanup: true
   on:
-    repo: akansh97531/Snipper
+    repo: coding-blocks/Snipper
     tags: true
