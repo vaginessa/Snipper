@@ -2,12 +2,15 @@
   "name": "Snipper",
   "productName": "Snipper",
   "version": "1.0.0",
+  "author": "Coding Blocks <info@codingblocks.com>",
   "description": "A cross platform desktop app that lets you save your frequently used code snippets.",
   "main": "./main.js",
   "scripts": {
+    "clean": "rm -rf dist/*",
     "postinstall": "install-app-deps",
     "pack": "build --dir",
     "dist-mac": "build --mac",
+    "dist-win": "electron-builder --win",
     "test": "echo \"Error: no test specified\" ",
     "start": "electron .",
     "package-win": "electron-packager . --overwrite --out=installers --version-string.FileDescription=CB --version-string.CompanyName=CB --version-string.ProductName=\"Snipper\"",
@@ -15,6 +18,12 @@
   },
   "build": {
     "appId": "coding-blocks.Snipper",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true
+    },
     "dmg": {
       "contents": [
         {

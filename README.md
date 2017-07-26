@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/akansh97531/Snipper.svg?branch=master)](https://travis-ci.org/akansh97531/Snipper)
+[![Build Status](https://travis-ci.org/coding-blocks/Snipper.svg?branch=master)](https://travis-ci.org/coding-blocks/Snipper)
 
 # Snipper
 
