@@ -6,6 +6,7 @@ node_js:
 install:
   - npm i -D
 script:
+  - 'npm i -D 7zip-bin'
   - 'npm run dist-mac'
   - 'npm run dist-win'
 deploy:
