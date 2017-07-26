@@ -1,14 +1,20 @@
-sudo: true
+sudo: required
+os:
+  - linux
+  - osx
+osx_image: xcode8.3
 dist: trusty
 language: node_js
 node_js:
   - '8'
+before_install:
+  - sudo apt-get install -y wine  
 install:
   - npm i -D
 script:
   - 'npm i -D 7zip-bin'
-  - 'npm run dist-mac'
-  - 'npm run dist-win'
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]];    then npm run dist-mac          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];  then npm run dist-win          ; fi
 deploy:
   provider: releases
   api_key:
