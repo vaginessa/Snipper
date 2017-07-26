@@ -11,8 +11,11 @@ cache:
   - 'node_modules'
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo add-apt-repository ppa:ubuntu-wine/ppa -y  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -qq update  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get install --no-install-recommends -y wine1.8 libstdc++6  ; fi 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -qq upgrade  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -qq dist-upgrade  ; fi
 install:
   - npm i -D
 script:
