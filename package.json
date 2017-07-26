@@ -1,8 +1,8 @@
 {
   "name": "Snipper",
   "productName": "Snipper",
-  "version": "1.0.0",
-  "author": "Coding Blocks <info@codingblocks.com>",
+  "version": "1.0.1",
+  "author": "",
   "description": "A cross platform desktop app that lets you save your frequently used code snippets.",
   "main": "./main.js",
   "scripts": {
@@ -39,7 +39,6 @@
       ]
     }
   },
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "nedb": "^1.8.0",
