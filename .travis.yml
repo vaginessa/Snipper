@@ -11,11 +11,12 @@ cache:
   - 'node_modules'
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo add-apt-repository ppa:ubuntu-wine/ppa -y  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo add-apt-repository 'deb http://security.ubuntu.com/ubuntu xenial-security main' -y  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y  ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -qq update  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get install --no-install-recommends -y wine1.8 libstdc++6  ; fi 
-  # - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -y -qq upgrade  ; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get -y -qq dist-upgrade  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo apt-get install --no-install-recommends -y wine1.8 gcc-6 g++-6  ; fi 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo update-alternatives --set g++ /usr/bin/g++-6  ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];    then sudo update-alternatives --set gcc /usr/bin/gcc-6  ; fi
 install:
   - npm i -D
 script:
@@ -25,7 +26,7 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: dy15iy9tB0lKgva5z0SBsqZ794mEyIOen73wTY3JNNh4yzqnVc8pzgDVD0tnexIV7T17PiA7jAqZLWZf9/igPre+RAX+VZAd74zEZF1sVk7DIwjPIQK84yCrIqjjbcV5tK/rtg914z0TfyR+2JNNt+Otcxv9rmp4lyMhoFI+O7MEkHiEdbHTbYIts+Qgd4QeYUhegVgQjPbzDXBRyjCVCZu5v0M2kbx64x8RvcU9iL+ysmu5E1Lsx4SMAbhep26GkYFIv9ZLjvJ+NDvueZgplHREtGWIEaX3c3gZOkHbOZ6veOdJMqIFn/BHPoveToVh+mwDxEuXKboF0RAoZSCiNNKkRg89kyB9P3xZO8S3iIQy4GzVvIfmMnU1KXHn2bJ7/9ne3auwG4H3+Q6O9xO6smFYR+YshWpupWQtWhZPKopZD4wTVmtuSsEy8EWAd4v6Y39SDKzMV6IyPmr/yDT6pkCaodkCBBnAnU44xzgsUT3etpay6LMyfwX2HBD8U6z6uKH5prGFRZhNDfOUHailF/do11P4GaFSu9PC7KzxH+tvo4jyJ/8lNJGTeyflQemI+ltOLMkApc/GZ1YvBna0xmDm71t6eDr4vI9PHQlCqvwsEZ0dC9iP9+uiD64I0dRRboMgV0EHj0C5K4pqVr1D1U1QLEnjskG2E1LmwgIsEvw=
+    secure: dy15iy9tB0lKgva5zs0SBsqZ794mEyIOen73wTY3JNNh4yzqnVc8pzgDVD0tnexIV7T17PiA7jAqZLWZf9/igPre+RAX+VZAd74zEZF1sVk7DIwjPIQK84yCrIqjjbcV5tK/rtg914z0TfyR+2JNNt+Otcxv9rmp4lyMhoFI+O7MEkHiEdbHTbYIts+Qgd4QeYUhegVgQjPbzDXBRyjCVCZu5v0M2kbx64x8RvcU9iL+ysmu5E1Lsx4SMAbhep26GkYFIv9ZLjvJ+NDvueZgplHREtGWIEaX3c3gZOkHbOZ6veOdJMqIFn/BHPoveToVh+mwDxEuXKboF0RAoZSCiNNKkRg89kyB9P3xZO8S3iIQy4GzVvIfmMnU1KXHn2bJ7/9ne3auwG4H3+Q6O9xO6smFYR+YshWpupWQtWhZPKopZD4wTVmtuSsEy8EWAd4v6Y39SDKzMV6IyPmr/yDT6pkCaodkCBBnAnU44xzgsUT3etpay6LMyfwX2HBD8U6z6uKH5prGFRZhNDfOUHailF/do11P4GaFSu9PC7KzxH+tvo4jyJ/8lNJGTeyflQemI+ltOLMkApc/GZ1YvBna0xmDm71t6eDr4vI9PHQlCqvwsEZ0dC9iP9+uiD64I0dRRboMgV0EHj0C5K4pqVr1D1U1QLEnjskG2E1LmwgIsEvw=
   file: 'dist/Snipper*'
   on:
     repo: coding-blocks/Snipper
