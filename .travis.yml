@@ -7,6 +7,9 @@ dist: trusty
 language: node_js
 node_js:
   - '8'
+matrix:
+  allow_failures:
+    - os: osx
 cache:
   - 'node_modules'
 before_install:
@@ -23,10 +26,3 @@ script:
   - 'npm i -D 7zip-bin'
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]];    then npm run dist-mac          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]];  then npm run dist-win          ; fi
-deploy:
-  provider: releases
-  api_key:
-    secure: dy15iy9tB0lKgva5zs0SBsqZ794mEyIOen73wTY3JNNh4yzqnVc8pzgDVD0tnexIV7T17PiA7jAqZLWZf9/igPre+RAX+VZAd74zEZF1sVk7DIwjPIQK84yCrIqjjbcV5tK/rtg914z0TfyR+2JNNt+Otcxv9rmp4lyMhoFI+O7MEkHiEdbHTbYIts+Qgd4QeYUhegVgQjPbzDXBRyjCVCZu5v0M2kbx64x8RvcU9iL+ysmu5E1Lsx4SMAbhep26GkYFIv9ZLjvJ+NDvueZgplHREtGWIEaX3c3gZOkHbOZ6veOdJMqIFn/BHPoveToVh+mwDxEuXKboF0RAoZSCiNNKkRg89kyB9P3xZO8S3iIQy4GzVvIfmMnU1KXHn2bJ7/9ne3auwG4H3+Q6O9xO6smFYR+YshWpupWQtWhZPKopZD4wTVmtuSsEy8EWAd4v6Y39SDKzMV6IyPmr/yDT6pkCaodkCBBnAnU44xzgsUT3etpay6LMyfwX2HBD8U6z6uKH5prGFRZhNDfOUHailF/do11P4GaFSu9PC7KzxH+tvo4jyJ/8lNJGTeyflQemI+ltOLMkApc/GZ1YvBna0xmDm71t6eDr4vI9PHQlCqvwsEZ0dC9iP9+uiD64I0dRRboMgV0EHj0C5K4pqVr1D1U1QLEnjskG2E1LmwgIsEvw=
-  file: 'dist/Snipper*'
-  on:
-    repo: coding-blocks/Snipper
