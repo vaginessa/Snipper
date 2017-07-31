@@ -12,6 +12,28 @@ const path = require('path');
 
 
 const {app, BrowserWindow, ipcMain, globalShortcut, clipboard} = require('electron');
+const config = require('./secrets');
+const electronOauth2 = require('electron-oauth2');
+const axios = require('axios');
+const U = require('./utils');
+
+let githubUser = (void 0)
+const githubConfig = {
+    clientId: config.github.clientId,
+    clientSecret: config.github.secret,
+    authorizationUrl: 'http://github.com/login/oauth/authorize',
+    tokenUrl: 'https://github.com/login/oauth/access_token',
+    useBasicAuthorizationHeader: false,
+    redirectUri: 'http://localhost/'
+};
+
+const githubLogin = electronOauth2(githubConfig, {
+    alwaysOnTop: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+        nodeIntegration: false
+    }
+})
 
 
 const url = require('url');
@@ -33,7 +55,7 @@ app.on('ready', function () {
         slashes: true
     }));
 
-    // mainWindow.webContents.openDevTools()
+     //mainWindow.webContents.openDevTools()
 
     require('./menu')
 });
@@ -59,6 +81,8 @@ function newSnip() {
         frame: false,
 
     });
+
+    //snipWindow.openDevTools()
 
     snipWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'public_static', 'snip.html'),
@@ -122,6 +146,36 @@ ipcMain.on('new-snip-add', function (event, arg) {
     let snip = JSON.parse(arg);
     if (snip.hotkey == undefined) {
         snip.hotkey = null;
+    }
+    if (snip.makeGist) {
+        const dateString = U.now();
+        const fileName = `snipper-${snip.title}-${dateString}.${snip.language}`
+        const payload = {
+            description: snip.title,
+            public: true,
+            files: {
+                [fileName]: {
+                    content: snip.code
+                }
+            }
+        }
+
+        githubLogin.getAccessToken({
+            scope: 'user,gist'
+        })
+            .then(token => {
+                return axios.post('https://api.github.com/gists', payload, {
+                    headers: {
+                        Authorization: `token ${token.access_token}`
+                    },
+                    json: true
+                })
+            })
+            .then(gist => {
+            })
+            .catch(err=> {
+                console.error(err)
+            })
     }
     if (snip._id) {
         db.updateSnip(snip._id, {
@@ -200,8 +254,18 @@ ipcMain.on("openhelp", function (event) {
         width: 800,
         height: 600
     });
+
     helpWindow.loadURL('https://github.com/electron/electron/blob/master/docs/api/accelerator.md');
     //mainWindow.openDevTools() //opens inspect console
+
+    /*githubLogin.getAccessToken({
+        scope: 'user,gist'
+    }).then(token => {
+        // yay with token
+    }).catch(err=> {
+        console.error(err)
+    })
+    */
 
 });
 
@@ -216,6 +280,92 @@ ipcMain.on('sort-inc', function (event, arg1, arg2) {
         mainWindow.webContents.send('all-snips', result, false);
     });
 });
+
+ipcMain.on('github-login', function (event, arg1, arg2) {
+    githubLogin.getAccessToken({
+     scope: 'user'
+     })
+        .then(token => {
+            return axios.get('https://api.github.com/user',{
+                headers: {
+                    Authorization: `token ${token.access_token}`
+                },
+                json: true
+            })
+        })
+        .then(user => {
+            githubUser = user
+            mainWindow.webContents.send('githubUser', githubUser, false);
+        })
+        .catch(err=> {
+            console.error(err)
+        })
+})
+
+ipcMain.on('sync-gists', function (event) {
+    githubLogin.getAccessToken({
+        scope: 'user'
+    })
+        .then(token => {
+            return axios.get('https://api.github.com/gists',{
+                headers: {
+                    Authorization: `token ${token.access_token}`
+                },
+                json: true
+            })
+        })
+        .then(response => {
+            const gists = response.data
+            const snipperGists = gists.filter(gist => {
+                const filteredFiles = Object.keys(gist.files).filter(key => {
+                    return /^snipper-.*$/.test(key)
+                })
+
+                return filteredFiles.length != 0
+            })
+
+            const promises = snipperGists.map(gist => {
+                const fileName = Object.keys(gist.files)[0]
+                const file = gist.files[fileName]
+                const url = file.raw_url
+
+                return (
+                    axios.get(url)
+                    .then( ({data}) => {
+                        file.content = data
+                        return file
+                    })
+                    .then(file => {
+                        return new Promise(resolve => {
+                            db.insertSnip({
+                                title: file.filename,
+                                language: file.language,
+                                code: file.content,
+                                timestamp: Math.floor(Date.now() / 1000),
+                                hotkey: null
+                            }, function () {
+                                resolve()
+                            })
+                        })
+                    })
+                )
+            })
+            return Promise.all(promises)
+        })
+        .then( () => {
+            sendAllSnips(false)
+        })
+        .catch(err=> {
+            console.error(err)
+        })
+})
+
+ipcMain.on('getGithubUser', function (event, window) {
+    if (window === 'main')
+        mainWindow.webContents.send('githubUser', githubUser, false);
+    else
+        snipWindow.send('githubUser', githubUser, false)
+})
 
 module.exports = {sendAllSnips, newSnip};
 
