@@ -39,6 +39,8 @@
                     <input type="text" class="form-control" placeholder="Title" name="srch-term" id="srch-term">
                     <div class="input-group-btn">
                         <a class="btn btn-default"><i class="glyphicon glyphicon-search"></i></a>
+                        <button type="submit" class="login-button btn btn-success" onclick="loginViaGithub()" id="loginGithubButton">Login via Github</button>
+                        <button type="submit" class="login-button btn btn-success" onclick="syncGists()" id="syncGistButton">Sync Gists</button>
                     </div>
                 </div>
             </form>
@@ -175,6 +177,9 @@
     }
     .block:hover {
         cursor: pointer;
+    }
+    .login-button {
+        margin-left: 10px
     }
 
 </style>

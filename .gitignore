@@ -5,7 +5,7 @@
 .sass-cache
 node_modules
 *.out
-secrets.json
+secrets.js
 db
 /snips.db
 /dist/

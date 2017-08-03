@@ -32,7 +32,13 @@
         </div>
         <div class="form-group">
             <div id="editor" class="form-control" style="height: 300px"></div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox checkbox-primary">
+                <input type="checkbox" id="makeGistCheckbox">
+                <label for="makeGistCheckbox">Make a gist</label>
 
+            </div>
         </div>
     </div>
     <div class="modal-footer ">
@@ -51,6 +57,10 @@
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");
 </script>
-
+<style type="text/css">
+    #makeGistCheckbox {
+        margin-left: 5px;
+    }
+</style>
 </body>
 </html>

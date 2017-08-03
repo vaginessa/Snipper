@@ -26,6 +26,7 @@ let hotkey =  ' <td>  <div class="input-group" style="width:300px;" >'
 
 window.onload = function () {
     ipcRenderer.send('get-snips');
+    ipcRenderer.send('getGithubUser', 'main');
 };
 
 function todate(timestamp) {
@@ -135,6 +136,17 @@ ipcRenderer.on('hotkey-set-return', function (event, iftrue, id, message, hotkey
 
 });
 
+ipcRenderer.on('githubUser', function (event, data, newSession) {
+    if (data) {
+        //user is loggedIn via github
+        $('#loginGithubButton').hide()
+        $('#syncGistButton').show()
+    } else {
+        $('#loginGithubButton').show()
+        $('#syncGistButton').hide()
+    }
+})
+
 function SetHotKey(element) {
 
     element_parent = element.parentNode.parentNode.parentNode.parentNode;
@@ -178,6 +190,10 @@ function newSnip() {
     ipcRenderer.send('new-snip');
 };
 
+function syncGists() {
+    ipcRenderer.send('sync-gists');
+}
+
 $(".arrow-down, .arrow-up").click(function(e){
 
     if($(this).hasClass('arrow-up') ){
@@ -190,3 +206,7 @@ $(".arrow-down, .arrow-up").click(function(e){
     $(this).toggleClass('arrow-down arrow-up')
 
 })
+
+function loginViaGithub() {
+    ipcRenderer.send('github-login');
+}
