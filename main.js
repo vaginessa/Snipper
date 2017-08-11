@@ -14,7 +14,7 @@ app.on('ready', function () {
     const screen = require('electron').screen;
     registerShortcut();
     const {width, height} = screen.getPrimaryDisplay().workAreaSize
-    mainWindow = new BrowserWindow({width, height});
+    mainWindow = new BrowserWindow({width, height, icon: path.join(__dirname, 'public_static', 'images', 'icon.ico')});
 
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'public_static', 'index.html'),
@@ -29,8 +29,9 @@ app.on('ready', function () {
 
 function registerShortcut() {
     const ret = globalShortcut.register('CommandOrControl+N', () => {
-        newSnip();
-    });
+            newSnip();
+})
+    ;
 
     if (!ret) {
         console.log('registration failed')
